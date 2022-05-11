@@ -1,0 +1,6 @@
+ATmegaCharger.*
+Debug/*
+src/*~
+include/*~
+src/*.cci
+include/*.cci
