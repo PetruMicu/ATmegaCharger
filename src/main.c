@@ -4,9 +4,9 @@ Automatic Program Generator
 © Copyright 1998-2022 Pavel Haiduc, HP InfoTech S.R.L.
 http://www.hpinfotech.ro
 
-Project : ATmegaCharger
+Project : 
 Version : 
-Date    : 5/11/2022
+Date    : 5/14/2022
 Author  : 
 Company : 
 Comments: 
@@ -19,7 +19,7 @@ Memory model            : Small
 External RAM size       : 0
 Data Stack size         : 256
 *******************************************************/
-
+#include "../include/PrimitiveTypeDefs.h"
 // I/O Registers definitions
 #include <mega164a.h>
 
@@ -28,21 +28,28 @@ Data Stack size         : 256
 // TWI functions
 #include <twi.h>
 
+// Alphanumeric LCD functions for TWI
+#include <alcd_twi.h>
+
 // Voltage Reference: AREF pin
 #define ADC_VREF_TYPE ((0<<REFS1) | (0<<REFS0) | (0<<ADLAR))
 
-// ADC interrupt service routine
-interrupt [ADC_INT] void adc_isr(void)
-{
-unsigned int adc_data;
 // Read the AD conversion result
-adc_data=ADCW;
-// Place your code here
-
+unsigned int read_adc(unsigned char adc_input)
+{
+ADMUX=adc_input | ADC_VREF_TYPE;
+// Delay needed for the stabilization of the ADC input voltage
+delay_us(10);
+// Start the AD conversion
+ADCSRA|=(1<<ADSC);
+// Wait for the AD conversion to complete
+while ((ADCSRA & (1<<ADIF))==0);
+ADCSRA|=(1<<ADIF);
+return ADCW;
 }
 
 // Declare your global variables here
-void ATmegaCharger(void); // main function
+void ATmegaCharger();
 
 void main(void)
 {
@@ -177,7 +184,7 @@ DIDR1=(0<<AIN0D) | (0<<AIN1D);
 // ADC4: On, ADC5: On, ADC6: On, ADC7: On
 DIDR0=(0<<ADC7D) | (0<<ADC6D) | (0<<ADC5D) | (0<<ADC4D) | (0<<ADC3D) | (0<<ADC2D) | (0<<ADC1D) | (0<<ADC0D);
 ADMUX=ADC_VREF_TYPE;
-ADCSRA=(1<<ADEN) | (0<<ADSC) | (0<<ADATE) | (0<<ADIF) | (1<<ADIE) | (0<<ADPS2) | (1<<ADPS1) | (1<<ADPS0);
+ADCSRA=(1<<ADEN) | (0<<ADSC) | (0<<ADATE) | (0<<ADIF) | (0<<ADIE) | (0<<ADPS2) | (1<<ADPS1) | (1<<ADPS0);
 ADCSRB=(0<<ADTS2) | (0<<ADTS1) | (0<<ADTS0);
 
 // SPI initialization
@@ -192,5 +199,13 @@ twi_master_init(100);
 // Globally enable interrupts
 #asm("sei")
 
-	ATmegaCharger(); // start application
+// I2C LCD Shield initialization for TWI
+// PCF8574 I2C bus address: 0x27
+// LCD characters/line: 16
+lcd_twi_init(0x27,16);
+
+while (1)
+      {
+       ATmegaCharger();
+      }
 }

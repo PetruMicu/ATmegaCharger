@@ -1,0 +1,11 @@
+VERSION:3 SOURCE_TIMESTAMP:54AEA361
+NODE:I LEVEL:0 LINE:13 "C:\Users\micup\OneDrive\Desktop\Facultate\AVR_P2\ATmega164ACharger\ATmegaCharger\include\PrimitiveTypeDefs.h"
+NODE:I LEVEL:0 LINE:14 "C:\cvavreval\inc\stdint.h"
+NODE:I LEVEL:0 LINE:15 "C:\cvavreval\inc\mega164A.h"
+NODE:M LEVEL:0 LINE:18 "GPIO_H"
+NODE:M LEVEL:0 LINE:27 "HIGH"
+NODE:M LEVEL:0 LINE:28 "LOW"
+NODE:M LEVEL:0 LINE:29 "OUT"
+NODE:T LEVEL:0 LINE:38 "REG8"
+LEVEL:1 LINE:39 ICON:U "reg8"
+LEVEL:1 LINE:49 ICON:U "<unnamed>"

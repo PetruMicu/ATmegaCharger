@@ -12,8 +12,8 @@
 ================================================================================================================*/
 #include "PrimitiveTypeDefs.h"
 
-#ifndef TEMPLATE_H
-#define TEMPLATE_H
+#ifndef LCD_H
+#define LCD_H
 
 /*================================================================================================================
 *									CONSTANTS
@@ -26,13 +26,11 @@
 * @brief Description
 * @implements	DEFINE_NAME_define
 */
-#define DEFINE_NAME			((uint8)0x00U)
 
 /**
 * @brief Description
 * @implements	TypeFef_typefef
 */
-typedef void TypeDef;
 
 /*================================================================================================================
 *									ENUMS
@@ -50,4 +48,4 @@ typedef void TypeDef;
 *									FUNCTION PROTOTYPES
 ================================================================================================================*/
 
-#endif /* TEMPLATE_H */
+#endif /* LCD_H /*

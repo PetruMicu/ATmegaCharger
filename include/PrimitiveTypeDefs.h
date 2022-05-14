@@ -12,6 +12,8 @@
 ================================================================================================================*/
 #include <stdint.h>
 
+#ifndef PRIMITIVE_TYPEDEFS_H
+#define PRIMITIVE_TYPEDEFS_H
 /*================================================================================================================
 *									CONSTANTS
 ================================================================================================================*/
@@ -41,12 +43,6 @@ typedef uint32_t uint32;
 * @brief Primitive Typedef
 * @implements	Primitive_typefef
 */
-typedef uint64_t uint64;
-
-/**
-* @brief Primitive Typedef
-* @implements	Primitive_typefef
-*/
 typedef int8_t int8;
 
 /**
@@ -60,12 +56,6 @@ typedef int16_t int16;
 * @implements	Primitive_typefef
 */
 typedef int32_t int32;
-
-/**
-* @brief Primitive Typedef
-* @implements	Primitive_typefef
-*/
-typedef int64_t int64;
 
 
 
@@ -84,3 +74,5 @@ typedef int64_t int64;
 /*================================================================================================================
 *									FUNCTION PROTOTYPES
 ================================================================================================================*/
+
+#endif /* PRIMITIVE_TYPEDEFS_H */

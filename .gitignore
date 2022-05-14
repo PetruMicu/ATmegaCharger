@@ -4,3 +4,4 @@ src/*~
 include/*~
 src/*.cci
 include/*.cci
+.idea/*
