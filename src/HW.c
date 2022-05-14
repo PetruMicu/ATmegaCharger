@@ -38,12 +38,53 @@
 /*================================================================================================================
 *									LOCAL FUNCTIONS
 ================================================================================================================*/
+/**
+* Reads current from sensor1 and converts it into uint16
+*
+*/
+static uint16 HW_ReadCurrent1()
+{
+    uint16 result = 0u;
+    return result;
+}
 
+/**
+* Reads current from sensor2 and converts it into uint16
+*
+*/
+static uint16 HW_ReadCurrent2()
+{
+    uint16 result = 0u;
+    return result;
+}
+
+/**
+* Reads temperature from temperature sensor and converts it into uint16
+*
+*/
+static uint16 HW_ReadTemperature()
+{
+    uint16 result = 0u;
+    return result;
+}
 /*================================================================================================================
 *									GLOBAL FUNCTIONS
 ================================================================================================================*/
 
 /**
-* Function description.
+* Calls local functions based on sensor
 *
 */
+uint16 HW_ReadSensor(HW_AIN sensor) {
+    switch (sensor) {
+        case CURR_SENS1:
+            return HW_ReadCurrent1();
+        case CURR_SENS2:
+            return HW_ReadCurrent2();
+        case TMP_SENS:
+            return HW_ReadTemperature();
+        default:
+            return 0u;
+    }
+}
+
