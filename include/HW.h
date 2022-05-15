@@ -11,6 +11,7 @@
 *									INCLUDE FILES
 ================================================================================================================*/
 #include "PrimitiveTypeDefs.h"
+#include <mega164A.h>
 
 #ifndef HW_H
 #define HW_H
@@ -23,7 +24,16 @@
 /*================================================================================================================
 *									DEFINES AND MACROS
 ================================================================================================================*/
-
+/**
+* @brief Active low logic high
+* @implements	DEFINE LVL_HIGH
+*/
+#define LVL_HIGH 0u
+/**
+* @brief Active low logic low
+* @implements	DEFINE LVL_LOW
+*/
+#define LVL_LOW 1u
 /*================================================================================================================
 *									ENUMS
 ================================================================================================================*/
@@ -72,6 +82,25 @@ typedef struct
     uint16 temperature;
     //add more if needed
 }HW_DataCollection;
+
+/**
+* @brief Union that emulates a register for easy bit access
+* @implements	union HW_REG8
+*/
+typedef union
+{
+    uint8_t reg8;
+    struct reg{
+        uint8_t bit0 : 1;
+        uint8_t bit1 : 1;
+        uint8_t bit2 : 1;
+        uint8_t bit3 : 1;
+        uint8_t bit4 : 1;
+        uint8_t bit5 : 1;
+        uint8_t bit6 : 1;
+        uint8_t bit7 : 1;
+    };
+}HW_REG8;
 /*================================================================================================================
 *									GLOBAL VARIABLE DECLARATIONS
 ================================================================================================================*/
@@ -81,21 +110,28 @@ typedef struct
 ================================================================================================================*/
 
 /**
+* @brief Sets the registers accordingly
+ * @implements	HW_Init(void)
+*/
+void HW_Init(void);
+
+/**
+* @brief Controls logic level of an external device
+ * @implements	HW_SetOutput(HW_OUT controlUnit, uint8 logicLevel)
+*/
+void HW_SetOutput(HW_OUT controlUnit, uint8 logicLevel);
+
+/**
+* @brief Reads digital input of external device
+ * @implements	HW_ReadInput(HW_IN controlUnit)
+*/
+uint8 HW_ReadInput(HW_DIN controlUnit);
+
+/**
 * @brief Reads analog value from an external sensor and converts it via ADC into uint16
  * @implements	HW_ReadSensor(HW_AIN sensor)
 */
+uint16 HW_ReadSensor(HW_AIN sensor);
 
-uint16 HW_ReadSensor(HW_AIN sensor) {
-    switch (sensor) {
-        case CURR_SENS1:
-            return HW_ReadCurrent1();
-        case CURR_SENS2:
-            return HW_ReadCurrent2();
-        case TMP_SENS:
-            return HW_ReadTemperature();
-        default:
-            return 0u;
-    }
-}
 
 #endif /* HW_H */

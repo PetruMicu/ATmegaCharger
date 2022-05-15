@@ -25,6 +25,6 @@ A1 - Current Sensor 1 (NiMH) - Pin 39
 A2 - Current Sensor 2 (LiPo) - Pin 38
 D2 - Green LED - Pin 16
 D3 - Red LED - Pin 17
-D4 - Relay 1 (NiMH) - Pin 18
-D5 - Relay 2 (NiMH) - Pin 19
 D7 - LCD Interface Button - Pin 21
+B6 - Relay 1 (NiMH) - Pin 7
+B7 - Relay 2 (NiMH) - Pin 8

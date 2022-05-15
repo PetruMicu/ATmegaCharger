@@ -203,8 +203,5 @@ twi_master_init(100);
 // PCF8574 I2C bus address: 0x27
 // LCD characters/line: 16
 lcd_twi_init(0x27,16);
-while (1)
-      {
-       ATmegaCharger();
-      }
+ATmegaCharger();
 }
