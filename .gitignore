@@ -16,3 +16,4 @@ src/*.cci
 include/*.cci
 .idea/*
 Release/*
+bin/*
