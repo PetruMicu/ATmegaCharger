@@ -14,6 +14,8 @@
 #include "../include/LCD.h"
 #include "../include/GPIO.h"
 #include "../include/PrimitiveTypeDefs.h"
+#include <delay.h>
+#include <math.h>
 /*================================================================================================================
 *									LOCAL TYPEDEFS (STRUCTURES, UNIONS, ENUMS)
 ================================================================================================================*/
@@ -58,6 +60,33 @@ void ATmegaCharger()
     HW_SetOutput(RED_LED, LVL_HIGH);
     while(1)
     {
-        //wait
+        uint32 temperature,copy, resistance,rawValue;
+        uint8 count, index, i;
+        char text[16] = "TEMP: ";
+        lcd_clear();
+        rawValue = HW_ReadSensor(TMP_SENS);
+        if(rawValue != 0u)
+            resistance = ((uint32)1000u * (uint32)(1023u/rawValue - 1));
+        else
+            resistance = 546789;
+        //temperature = (3950.0u*300.0u) / ((double)3950u + ((double)300u * (double)log(resistance / 10000u)));
+        copy = resistance;
+        temperature = 1u;
+        count = 0u, index = 6u;
+        while(copy)
+        {   
+            temperature = temperature*10 + copy % 10;
+            count++;
+            copy /= 10u;
+        }
+        for(i = 0; i < count; i++)
+        {
+           text[index] = (temperature % 10) + '0';
+           temperature /= 10;
+           index++; 
+        }
+        text[index] = '\0';
+        lcd_puts(text);
+        delay_ms(1000);
     }
 }

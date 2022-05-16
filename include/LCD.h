@@ -11,7 +11,7 @@
 *									INCLUDE FILES
 ================================================================================================================*/
 #include "PrimitiveTypeDefs.h"
-
+#include <alcd_twi.h>
 #ifndef LCD_H
 #define LCD_H
 
