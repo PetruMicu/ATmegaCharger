@@ -54,7 +54,7 @@ static uint16 HW_ReadCurrent1(void)
 */
 static uint16 HW_ReadCurrent2(void)
 {
-    uint16 result = 0u;
+    uint16 result = 55;
     return result;
 }
 

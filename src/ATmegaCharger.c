@@ -56,6 +56,8 @@ void ATmegaCharger()
     HW_Init();
     HW_SetOutput(RELAY1, LVL_HIGH);
     HW_SetOutput(RED_LED, LVL_HIGH);
+    LCD_init();
+    LCD_interface2();
     while(1)
     {
         //wait
