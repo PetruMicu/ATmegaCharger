@@ -135,8 +135,9 @@ void HW_Init(void)
 void HW_SetOutput(HW_OUT controlUnit, uint8 logicLevel)
 {
     HW_REG8 copy;
-    switch (controlUnit) {
-        case GREED_LED:
+    switch (controlUnit)
+    {
+            case GREED_LED:
             copy.reg8 = PORTD;
             copy.bit2 = logicLevel;
             PORTD = copy.reg8;
@@ -168,7 +169,8 @@ void HW_SetOutput(HW_OUT controlUnit, uint8 logicLevel)
 uint8 HW_ReadInput(HW_DIN controlUnit)
 {
     uint8 result;
-    switch (controlUnit) {
+    switch (controlUnit)
+    {
         case INERFACE_BTN:
             result = (PORTD >> 7u) & 1u;
             break;
@@ -182,8 +184,10 @@ uint8 HW_ReadInput(HW_DIN controlUnit)
 * Calls local functions based on sensor
 *
 */
-uint16 HW_ReadSensor(HW_AIN sensor) {
-    switch (sensor) {
+uint16 HW_ReadSensor(HW_AIN sensor)
+{
+    switch (sensor)
+    {
         case CURR_SENS1:
             return HW_ReadCurrent1();
         case CURR_SENS2:
