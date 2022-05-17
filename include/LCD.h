@@ -15,7 +15,8 @@
 #include <twi.h>
 // Alphanumeric LCD functions for TWI
 #include <alcd_twi.h>
-#include "../include/HW.h"
+#include "HW.h"
+
 #ifndef LCD_H
 #define LCD_H
 
