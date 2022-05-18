@@ -11,6 +11,11 @@
 *									INCLUDE FILES
 ================================================================================================================*/
 #include "PrimitiveTypeDefs.h"
+// TWI functions
+#include <twi.h>
+// Alphanumeric LCD functions for TWI
+#include <alcd_twi.h>
+#include "HW.h"
 
 #ifndef LCD_H
 #define LCD_H
@@ -47,5 +52,23 @@
 /*================================================================================================================
 *									FUNCTION PROTOTYPES
 ================================================================================================================*/
+/**
+* @brief Controls the interface of LCD
+ * @implements	void LCD_interface1(uint8 logicLevel)
+*/
+void LCD_interface1(void);
+
+/**
+* @brief Controls the interface of LCD
+ * @implements	void LCD_interface2(uint8 logicLevel)
+*/
+void LCD_interface2();
+
+/**
+* @brief Initialize the LCD
+ * @implements	void LCD_init(void);
+*/
+void LCD_init(void);
+
 
 #endif /* LCD_H /*

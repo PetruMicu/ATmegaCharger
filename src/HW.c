@@ -54,7 +54,7 @@ static uint16 HW_ReadCurrent1(void)
 */
 static uint16 HW_ReadCurrent2(void)
 {
-    uint16 result = 0u;
+    uint16 result = 55;
     return result;
 }
 
@@ -64,8 +64,28 @@ static uint16 HW_ReadCurrent2(void)
 */
 static uint16 HW_ReadTemperature(void)
 {
-    uint16 result = 0u;
-    return result;
+    ADMUX &= 0b11100001; // selects ADC0
+    delay_us(10);
+    ADCSRA |= (1u << ADSC); // starts conversion
+    while(ADCSRA & (1<<ADIF) == 0)
+    {
+    } // wait until conversion finishes
+    // disable interrupt flag
+    ADCSRA |= (1u << ADIF);
+    return ADCW;
+}
+
+static void HW_ADCInit(void)
+{
+    HW_REG8 copy;
+    copy.reg8 = ADMUX;
+    // Sets voltage reference to AVCC with external capacitor at AREF pin
+    // Use right adjusted result
+    // Select ADC0
+    copy.reg8 = 0u;
+    copy.bit6 = 1u;
+    ADMUX = copy.reg8;
+    ADCSRA = 0x83;// enable adc, no auto-trigger, no interrupts, prescaler x 8
 }
 /*================================================================================================================
 *									GLOBAL FUNCTIONS
@@ -78,11 +98,12 @@ static uint16 HW_ReadTemperature(void)
 */
 void HW_Init(void)
 {
-    // A0,A1,A2 used as analog pins
-
+    HW_REG8 copy;
+    // A0,A1,A2 used as analog pins (disable digital buffers)
+    DDRA = 0; // all inputs
+    //DIDR0 = 0xFF; //disable all PORTA digital buffers to reduce power consumption
     // D2,D3 used as digital outputs (deactivated)
     // D7 used as digital input
-    HW_REG8 copy;
     copy.reg8 = DDRD;
     copy.bit2 = 1u;
     copy.bit3 = 1u;
@@ -103,6 +124,8 @@ void HW_Init(void)
     copy.bit6 = LVL_LOW;
     copy.bit7 = LVL_LOW;
     PORTB = copy.reg8;
+    //ADC init
+    HW_ADCInit();
 }
 
 /**
@@ -112,8 +135,9 @@ void HW_Init(void)
 void HW_SetOutput(HW_OUT controlUnit, uint8 logicLevel)
 {
     HW_REG8 copy;
-    switch (controlUnit) {
-        case GREED_LED:
+    switch (controlUnit)
+    {
+            case GREED_LED:
             copy.reg8 = PORTD;
             copy.bit2 = logicLevel;
             PORTD = copy.reg8;
@@ -145,7 +169,8 @@ void HW_SetOutput(HW_OUT controlUnit, uint8 logicLevel)
 uint8 HW_ReadInput(HW_DIN controlUnit)
 {
     uint8 result;
-    switch (controlUnit) {
+    switch (controlUnit)
+    {
         case INERFACE_BTN:
             result = (PORTD >> 7u) & 1u;
             break;
@@ -159,8 +184,10 @@ uint8 HW_ReadInput(HW_DIN controlUnit)
 * Calls local functions based on sensor
 *
 */
-uint16 HW_ReadSensor(HW_AIN sensor) {
-    switch (sensor) {
+uint16 HW_ReadSensor(HW_AIN sensor)
+{
+    switch (sensor)
+    {
         case CURR_SENS1:
             return HW_ReadCurrent1();
         case CURR_SENS2:
