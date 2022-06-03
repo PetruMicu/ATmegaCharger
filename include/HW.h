@@ -7,23 +7,13 @@
 * Professor: Adrian Paun
 ================================================================================================================*/
 
-/*================================================================================================================
-*									INCLUDE FILES
-================================================================================================================*/
-#include "PrimitiveTypeDefs.h"
 #include <mega164A.h>
 #include <delay.h>
+#include <twi.h>
+#include <alcd_twi.h>
+#include "PrimitiveTypeDefs.h"
 #ifndef HW_H
 #define HW_H
-
-
-/*================================================================================================================
-*									CONSTANTS
-================================================================================================================*/
-
-/*================================================================================================================
-*									DEFINES AND MACROS
-================================================================================================================*/
 /**
 * @brief Active low logic high
 * @implements	DEFINE LVL_HIGH
@@ -34,9 +24,7 @@
 * @implements	DEFINE LVL_LOW
 */
 #define LVL_LOW 1u
-/*================================================================================================================
-*									ENUMS
-================================================================================================================*/
+
 /**
 * @brief Enumeration of hardware pieces that need an output
 * @implements	enum HW_OUT
@@ -69,9 +57,7 @@ typedef enum
 {
     INERFACE_BTN = 0u
 }HW_DIN;
-/*================================================================================================================
-*									STRUCTURES AND OTHER TYPEDEFS
-================================================================================================================*/
+
 /**
 * @brief Structure containing all data read from external hardware
 * @implements	struct HW_DataCollection
@@ -101,13 +87,6 @@ typedef union
         uint8_t bit7 : 1;
     };
 }HW_REG8;
-/*================================================================================================================
-*									GLOBAL VARIABLE DECLARATIONS
-================================================================================================================*/
-
-/*================================================================================================================
-*									FUNCTION PROTOTYPES
-================================================================================================================*/
 
 /**
 * @brief Sets the registers accordingly
@@ -132,6 +111,23 @@ uint8 HW_ReadInput(HW_DIN controlUnit);
  * @implements	HW_ReadSensor(HW_AIN sensor)
 */
 uint16 HW_ReadSensor(HW_AIN sensor);
+/**
+* @brief Controls the interface of LCD
+ * @implements	void LCD_interface1(uint8 logicLevel)
+*/
+void LCD_interface1(void);
+
+/**
+* @brief Controls the interface of LCD
+ * @implements	void LCD_interface2(uint8 logicLevel)
+*/
+void LCD_interface2();
+
+/**
+* @brief Initialize the LCD
+ * @implements	void LCD_init(void);
+*/
+void LCD_init(void);
 
 
 #endif /* HW_H */

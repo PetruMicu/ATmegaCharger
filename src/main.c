@@ -1,17 +1,4 @@
 /*******************************************************
-This program was created by the CodeWizardAVR V3.48b 
-Automatic Program Generator
-� Copyright 1998-2022 Pavel Haiduc, HP InfoTech S.R.L.
-http://www.hpinfotech.ro
-
-Project : 
-Version : 
-Date    : 5/14/2022
-Author  : 
-Company : 
-Comments: 
-
-
 Chip type               : ATmega164A
 Program type            : Application
 AVR Core Clock frequency: 8.000000 MHz
@@ -199,9 +186,5 @@ twi_master_init(100);
 // Globally enable interrupts
 #asm("sei")
 
-// I2C LCD Shield initialization for TWI
-// PCF8574 I2C bus address: 0x27
-// LCD characters/line: 16
-lcd_twi_init(0x27,16);
 ATmegaCharger();
 }

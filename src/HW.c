@@ -6,46 +6,31 @@
 * Owners: Petru Micu, Andreea-Ioana Andrei
 * Professor: Adrian Paun
 ================================================================================================================*/
-
-/*================================================================================================================
-*									INCLUDE FILES
-================================================================================================================*/
 #include "../include/HW.h"
-/*================================================================================================================
-*									LOCAL TYPEDEFS (STRUCTURES, UNIONS, ENUMS)
-================================================================================================================*/
-
-/*================================================================================================================
-*									LOCAL MACROS
-================================================================================================================*/
-
-/*================================================================================================================
-*									LOCAL CONSTANTS
-================================================================================================================*/
-
-/*================================================================================================================
-*									GLOBAL CONSTANTS
-================================================================================================================*/
-
-/*================================================================================================================
-*									GLOBAL VARIABLES
-================================================================================================================*/
-
-/*================================================================================================================
-*									LOCAL FUNCTION PROTOTYPES
-================================================================================================================*/
-
-/*================================================================================================================
-*									LOCAL FUNCTIONS
-================================================================================================================*/
+#include <alcd_twi.h>
 /**
 * Reads current from sensor1 and converts it into uint16
 *
 */
+//#define ADIF 4
+//#define ADSC 7
 static uint16 HW_ReadCurrent1(void)
 {
-    uint16 result = 0u;
-    return result;
+    uint16 ADCval;
+    uint8 high,low;
+    ADMUX |= 0x01; // selects ADC1
+    delay_us(10);
+    ADCSRA |= (1u << ADSC); // starts conversion ADSC
+    while(ADCSRA & (1<<ADIF) == 0)
+    {
+    } // wait until conversion finishes
+    // disable interrupt flag
+    ADCSRA |= (1u << ADIF);
+    //result = (ADCL/1023*5000-2500)/100;
+    low = ADCL;
+    high = ADCH;
+    ADCval = (high<<8)|low;
+    return ADCval;
 }
 
 /**
@@ -54,8 +39,21 @@ static uint16 HW_ReadCurrent1(void)
 */
 static uint16 HW_ReadCurrent2(void)
 {
-    uint16 result = 55;
-    return result;
+    uint16 ADCval;
+    uint8 high,low;
+    ADMUX |= 0x02; // selects ADC2
+    delay_us(10);
+    ADCSRA |= (1u << ADSC); // starts conversion ADSC
+    while(ADCSRA & (1<<ADIF) == 0)
+    {
+    } // wait until conversion finishes
+    // disable interrupt flag
+    ADCSRA |= (1u << ADIF);
+    //result = (ADCL/1023*5000-2500)/100;
+    low = ADCL;
+    high = ADCH;
+    ADCval = (high<<8)|low;
+    return ADCval;
 }
 
 /**
@@ -64,7 +62,7 @@ static uint16 HW_ReadCurrent2(void)
 */
 static uint16 HW_ReadTemperature(void)
 {
-    ADMUX &= 0b11100001; // selects ADC0
+    ADMUX &= 0b11100000; // selects ADC0
     delay_us(10);
     ADCSRA |= (1u << ADSC); // starts conversion
     while(ADCSRA & (1<<ADIF) == 0)
@@ -87,9 +85,6 @@ static void HW_ADCInit(void)
     ADMUX = copy.reg8;
     ADCSRA = 0x83;// enable adc, no auto-trigger, no interrupts, prescaler x 8
 }
-/*================================================================================================================
-*									GLOBAL FUNCTIONS
-================================================================================================================*/
 
 /**
 * Modifies GPIO Registers in order to control
@@ -198,4 +193,76 @@ uint16 HW_ReadSensor(HW_AIN sensor)
             return 0u;
     }
 }
+void LCD_init()
+{
+    twi_master_init(100);
+    lcd_twi_init(0x27,16);
+    //lcd_clear();
+}
+
+/**
+* Shows the first interface when the button is pressed.
+*
+*/
+/*void LCD_interface1()
+{
+    uint16 resultLiPo, resultNiMh, temperatureLiPo, temperatureNiMh;
+    switch (btn)
+    {
+        case LVL_HIGH:
+            lcd_printf("LiPo ");
+            resultLiPo = HW_ReadSensor(CURR_SENS1);
+            //TODO: find the formula for %
+            lcd_printf("%u%%", resultLiPo);
+            lcd_gotoxy(0,1);
+            lcd_printf("Temp");
+            temperatureLiPo = HW_ReadSensor(TMP_SENS);
+            lcd_printf("%uC ", temperatureLiPo);
+            lcd_printf("Fan:");
+            break;
+        case LVL_LOW:
+            lcd_printf("NiMh ");
+            resultNiMh = HW_ReadSensor(CURR_SENS2);
+            //TODO: find the formula for %
+            lcd_printf("%u%%", resultNiMh);
+            lcd_gotoxy(0,1);
+            lcd_printf("Temp:");
+            temperatureNiMh = HW_ReadSensor(TMP_SENS);
+            lcd_printf("%uC ", temperatureNiMh);
+            lcd_printf("Fan:");
+            break;
+        default: //do nothing
+    }
+}
+void LCD_interface2()
+{
+    uint16 resultLiPo, resultNiMh, temperatureLiPo, temperatureNiMh;
+    switch (btn)
+    {
+        case LVL_HIGH:
+            lcd_printf("LiPo ");
+            resultLiPo = HW_ReadSensor(CURR_SENS1);
+            //TODO: calculate the current
+            lcd_printf("%u mA", resultLiPo);
+            lcd_gotoxy(0,1);
+            lcd_printf("Temp");
+            temperatureLiPo = HW_ReadSensor(TMP_SENS);
+            lcd_printf("%uC ", temperatureLiPo);
+            lcd_printf("Fan:");
+            break;
+        case LVL_LOW:
+            lcd_printf("NiMh ");
+            resultNiMh = HW_ReadSensor(CURR_SENS2);
+            //TODO: calculate the current
+            lcd_printf("%u mA", resultNiMh);
+            lcd_gotoxy(0,1);
+            lcd_printf("Temp:");
+            temperatureNiMh = HW_ReadSensor(TMP_SENS);
+            lcd_printf("%uC ", temperatureNiMh);
+            lcd_printf("Fan:");
+            break;
+        default: //do nothing
+    }
+}
+*/
 
