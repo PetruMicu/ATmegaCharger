@@ -7,6 +7,7 @@ External RAM size       : 0
 Data Stack size         : 256
 *******************************************************/
 #include "../include/PrimitiveTypeDefs.h"
+#include "../include/HW.h"
 // I/O Registers definitions
 #include <mega164a.h>
 

@@ -14,6 +14,9 @@
 #include "PrimitiveTypeDefs.h"
 #ifndef HW_H
 #define HW_H
+
+// Voltage Reference: AREF pin
+#define ADC_VREF_TYPE ((0<<REFS1) | (0<<REFS0) | (0<<ADLAR))
 /**
 * @brief Active low logic high
 * @implements	DEFINE LVL_HIGH

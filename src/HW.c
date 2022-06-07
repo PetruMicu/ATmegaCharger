@@ -10,9 +10,6 @@
 #include <mega164a.h>
 #include <alcd_twi.h>
 
-// Voltage Reference: AREF pin
-#define ADC_VREF_TYPE ((0<<REFS1) | (0<<REFS0) | (0<<ADLAR))
-
 static uint16_t readAdc(uint8_t adcInput) {
     ADMUX=adcInput | ADC_VREF_TYPE;
 // Delay needed for the stabilization of the ADC input voltage
@@ -91,6 +88,9 @@ void HW_SetOutput(HW_OUT controlUnit, uint8 logicLevel)
             copy.reg8 = PORTB;
             copy.bit6 = logicLevel;
             PORTB = copy.reg8;
+            copy.reg8 = PORTD;
+            copy.bit6 = logicLevel;
+            PORTD = copy.reg8;
             break;
         case BATTERY_RELAY:
             copy.reg8 = PORTB;
@@ -110,14 +110,14 @@ uint8 HW_ReadInput(HW_DIN controlUnit)
     uint8 result;
     switch (controlUnit)
     {
-        case INERFACE_BTN:
+        case INTERFACE_BTN:
             result = (PORTD >> 5u) & 1u;
         case DIGITAL_TMP_SENSOR:
             result = (PORTD >> 7u) & 1u;
         default:
             result = LVL_LOW;
     }
-    return result;
+    return !result;
 }
 
 /**
