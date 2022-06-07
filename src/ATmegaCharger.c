@@ -24,7 +24,7 @@ void ATmegaCharger()
 {
     // Test API functionality
     HW_Init();
-    HW_SetOutput(RELAY1, LVL_HIGH);
+    HW_SetOutput(POWER_RELAY, LVL_HIGH);
     //HW_SetOutput(RELAY2, LVL_HIGH);
     HW_SetOutput(RED_LED, LVL_HIGH);
     LCD_init();

@@ -160,14 +160,6 @@ ADCSRB=(0<<ADTS2) | (0<<ADTS1) | (0<<ADTS0);
 // SPI initialization
 // SPI disabled
 SPCR=(0<<SPIE) | (0<<SPE) | (0<<DORD) | (0<<MSTR) | (0<<CPOL) | (0<<CPHA) | (0<<SPR1) | (0<<SPR0);
-
-// TWI initialization
-// Mode: TWI Master
-// Bit Rate: 100 kHz
-twi_master_init(100);
-
-// Globally enable interrupts
 #asm("sei")
-
 ATmegaCharger();
 }

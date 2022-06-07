@@ -35,8 +35,8 @@ typedef enum
     GREED_LED = 0u,
     RED_LED,
     ON_OFF_LED, // PORTD6
-    RELAY1,
-    RELAY2
+    POWER_RELAY,
+    BATTERY_RELAY
 }HW_OUT;
 
 /**

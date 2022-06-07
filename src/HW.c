@@ -87,12 +87,12 @@ void HW_SetOutput(HW_OUT controlUnit, uint8 logicLevel)
             copy.bit3 = logicLevel;
             PORTD = copy.reg8;
             break;
-        case RELAY1:
+        case POWER_RELAY:
             copy.reg8 = PORTB;
             copy.bit6 = logicLevel;
             PORTB = copy.reg8;
             break;
-        case RELAY2:
+        case BATTERY_RELAY:
             copy.reg8 = PORTB;
             copy.bit7 = logicLevel;
             PORTB = copy.reg8;
@@ -139,7 +139,6 @@ void LCD_init()
 {
     twi_master_init(100);
     lcd_twi_init(0x27,16);
-    //lcd_clear();
 }
 
 /**
