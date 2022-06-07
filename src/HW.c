@@ -7,69 +7,21 @@
 * Professor: Adrian Paun
 ================================================================================================================*/
 #include "../include/HW.h"
+#include <mega164a.h>
 #include <alcd_twi.h>
-/**
-* Reads current from sensor1 and converts it into uint16
-*
-*/
-//#define ADIF 4
-//#define ADSC 7
-static uint16 HW_ReadCurrent1(void)
-{
-    uint16 ADCval;
-    uint8 high,low;
-    ADMUX |= 0x01; // selects ADC1
-    delay_us(10);
-    ADCSRA |= (1u << ADSC); // starts conversion ADSC
-    while(ADCSRA & (1<<ADIF) == 0)
-    {
-    } // wait until conversion finishes
-    // disable interrupt flag
-    ADCSRA |= (1u << ADIF);
-    //result = (ADCL/1023*5000-2500)/100;
-    low = ADCL;
-    high = ADCH;
-    ADCval = (high<<8)|low;
-    return ADCval;
-}
 
-/**
-* Reads current from sensor2 and converts it into uint16
-*
-*/
-static uint16 HW_ReadCurrent2(void)
-{
-    uint16 ADCval;
-    uint8 high,low;
-    ADMUX |= 0x02; // selects ADC2
-    delay_us(10);
-    ADCSRA |= (1u << ADSC); // starts conversion ADSC
-    while(ADCSRA & (1<<ADIF) == 0)
-    {
-    } // wait until conversion finishes
-    // disable interrupt flag
-    ADCSRA |= (1u << ADIF);
-    //result = (ADCL/1023*5000-2500)/100;
-    low = ADCL;
-    high = ADCH;
-    ADCval = (high<<8)|low;
-    return ADCval;
-}
+// Voltage Reference: AREF pin
+#define ADC_VREF_TYPE ((0<<REFS1) | (0<<REFS0) | (0<<ADLAR))
 
-/**
-* Reads temperature from temperature sensor and converts it into uint16
-*
-*/
-static uint16 HW_ReadTemperature(void)
-{
-    ADMUX &= 0b11100000; // selects ADC0
+static uint16_t readAdc(uint8_t adcInput) {
+    ADMUX=adcInput | ADC_VREF_TYPE;
+// Delay needed for the stabilization of the ADC input voltage
     delay_us(10);
-    ADCSRA |= (1u << ADSC); // starts conversion
-    while(ADCSRA & (1<<ADIF) == 0)
-    {
-    } // wait until conversion finishes
-    // disable interrupt flag
-    ADCSRA |= (1u << ADIF);
+// Start the AD conversion
+    ADCSRA|=(1<<ADSC);
+// Wait for the AD conversion to complete
+    while ((ADCSRA & (1<<ADIF))==0);
+    ADCSRA|=(1<<ADIF);
     return ADCW;
 }
 
@@ -77,11 +29,8 @@ static void HW_ADCInit(void)
 {
     HW_REG8 copy;
     copy.reg8 = ADMUX;
-    // Sets voltage reference to AVCC with external capacitor at AREF pin
-    // Use right adjusted result
-    // Select ADC0
-    copy.reg8 = 0u;
-    copy.bit6 = 1u;
+    copy.reg8 = 0u; // Sets voltage reference to AVCC with external capacitor at AREF pin
+    copy.bit6 = 1u; // Use right adjusted result
     ADMUX = copy.reg8;
     ADCSRA = 0x83;// enable adc, no auto-trigger, no interrupts, prescaler x 8
 }
@@ -89,21 +38,18 @@ static void HW_ADCInit(void)
 /**
 * Modifies GPIO Registers in order to control
 * the external devices
-*
 */
 void HW_Init(void)
 {
     HW_REG8 copy;
-    // A0,A1,A2 used as analog pins (disable digital buffers)
-    DDRA = 0; // all inputs
-    //DIDR0 = 0xFF; //disable all PORTA digital buffers to reduce power consumption
-    // D2,D3 used as digital outputs (deactivated)
-    // D7 used as digital input
+    DDRA = 0; // all analog inputs
+    DIDR0 = 0xFF; //disable all PORTA digital buffers to reduce power consumption
     copy.reg8 = DDRD;
-    copy.bit2 = 1u;
-    copy.bit3 = 1u;
-    copy.bit4 = 1u;
-    copy.bit5 = 1u;
+    copy.bit2 = 1u; //PORTD2 -> GREEN LED
+    copy.bit3 = 1u; //PORTD3 -> RED LED
+    copy.bit5 = 0u; //PORTD5 -> BUTTON INTERFACE
+    copy.bit6 = 1u; //PORTD6 -> ON-OFF LED
+    copy.bit7 = 0u; //PORTD7 -> DIGITAL_TMP SENSOR
     DDRD = copy.reg8;
     copy.reg8 = PORTD;
     copy.bit2 = LVL_LOW;
@@ -112,8 +58,8 @@ void HW_Init(void)
     // test and modify if needed
     // B6, B7 used as digital outputs
     copy.reg8 = DDRB;
-    copy.bit6 = 1u;
-    copy.bit7 = 1u;
+    copy.bit6 = 1u; // PORTB6 -> ON-OFF RELAY
+    copy.bit7 = 1u; // PORTB7 -> ROUTE RELAY
     DDRB = copy.reg8;
     copy.reg8 = PORTB;
     copy.bit6 = LVL_LOW;
@@ -125,7 +71,6 @@ void HW_Init(void)
 
 /**
 * Modifies GPIO value
-*
 */
 void HW_SetOutput(HW_OUT controlUnit, uint8 logicLevel)
 {
@@ -159,7 +104,6 @@ void HW_SetOutput(HW_OUT controlUnit, uint8 logicLevel)
 
 /**
 * Reads digital input from devices like buttons
-*
 */
 uint8 HW_ReadInput(HW_DIN controlUnit)
 {
@@ -167,8 +111,9 @@ uint8 HW_ReadInput(HW_DIN controlUnit)
     switch (controlUnit)
     {
         case INERFACE_BTN:
+            result = (PORTD >> 5u) & 1u;
+        case DIGITAL_TMP_SENSOR:
             result = (PORTD >> 7u) & 1u;
-            break;
         default:
             result = LVL_LOW;
     }
@@ -177,18 +122,15 @@ uint8 HW_ReadInput(HW_DIN controlUnit)
 
 /**
 * Calls local functions based on sensor
-*
 */
 uint16 HW_ReadSensor(HW_AIN sensor)
 {
     switch (sensor)
     {
-        case CURR_SENS1:
-            return HW_ReadCurrent1();
-        case CURR_SENS2:
-            return HW_ReadCurrent2();
+        case CURR_SENS:
+            return readAdc(CURR_SENS); // adc1
         case TMP_SENS:
-            return HW_ReadTemperature();
+            return readAdc(TMP_SENS); // adc0
         default:
             return 0u;
     }

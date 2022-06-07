@@ -34,6 +34,7 @@ typedef enum
 {
     GREED_LED = 0u,
     RED_LED,
+    ON_OFF_LED, // PORTD6
     RELAY1,
     RELAY2
 }HW_OUT;
@@ -45,8 +46,7 @@ typedef enum
 typedef enum
 {
     TMP_SENS = 0u,
-    CURR_SENS1,
-    CURR_SENS2
+    CURR_SENS = 1u
 }HW_AIN;
 
 /**
@@ -55,7 +55,8 @@ typedef enum
 */
 typedef enum
 {
-    INERFACE_BTN = 0u
+    INTERFACE_BTN = 0u, // Button at PORTD5
+    DIGITAL_TMP_SENSOR
 }HW_DIN;
 
 /**
@@ -64,7 +65,7 @@ typedef enum
 */
 typedef struct
 {
-    uint16 current; // either from sensor1 or sensor2 based on user input
+    uint16 current;
     uint16 temperature;
     //add more if needed
 }HW_DataCollection;
