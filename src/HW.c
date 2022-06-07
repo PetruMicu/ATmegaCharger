@@ -9,6 +9,7 @@
 #include "../include/HW.h"
 #include <mega164a.h>
 #include <alcd_twi.h>
+uint8_t debug = 1;
 
 static uint16_t readAdc(uint8_t adcInput) {
     ADMUX=adcInput | ADC_VREF_TYPE;
@@ -50,7 +51,8 @@ void HW_Init(void)
     DDRD = copy.reg8;
     copy.reg8 = PORTD;
     copy.bit2 = LVL_LOW;
-    copy.bit2 = LVL_LOW;
+    copy.bit3 = LVL_LOW;
+    copy.bit5 = LVL_LOW;
     PORTD = copy.reg8;
     // test and modify if needed
     // B6, B7 used as digital outputs
@@ -64,6 +66,9 @@ void HW_Init(void)
     PORTB = copy.reg8;
     //ADC init
     HW_ADCInit();
+    //Enable PCINT3 interrupt for PCINT29 <-> PD5
+    PCICR |= (1u << PCIE3);
+    PCMSK3 |= (1u << PCINT29);
 }
 
 /**
@@ -206,4 +211,11 @@ void LCD_interface2()
     }
 }
 */
+
+interrupt [PC_INT3] void ButtonPressed(void) {
+    if(HW_ReadInput(INTERFACE_BTN) == LVL_LOW)
+        return;
+    debug ^= 1u;
+    delay_ms(1000);
+}
 

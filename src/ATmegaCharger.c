@@ -14,7 +14,7 @@
 #include "../include/PrimitiveTypeDefs.h"
 #include <delay.h>
 #include <math.h>
-uint8_t debug = 0;
+extern uint8_t debug;
 /**
 * Main Function of the project.
 *

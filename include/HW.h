@@ -33,6 +33,7 @@
 * @implements	enum HW_OUT
 */
 
+
 typedef enum
 {
     GREED_LED = 0u,
