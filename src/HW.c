@@ -145,7 +145,7 @@ uint16 HW_ReadSensor(HW_AIN sensor)
             return 0u;
     }
 }
-void LCD_init()
+void LCD_Init()
 {
     twi_master_init(100);
     lcd_twi_init(0x27,16);
@@ -155,67 +155,64 @@ void LCD_init()
 * Shows the first interface when the button is pressed.
 *
 */
-/*void LCD_interface1()
+void LCD_Print()
 {
     uint16 resultLiPo, resultNiMh, temperatureLiPo, temperatureNiMh;
-    switch (btn)
+    if(powerRelay) // power is on
     {
-        case LVL_HIGH:
+        lcd_printf("Power ON ");
+        if(batteryRelay)
+        {
+            //NiMH
+            lcd_printf("NiMH ");
+
+        }
+        else
+        {
+            //LiPo
             lcd_printf("LiPo ");
-            resultLiPo = HW_ReadSensor(CURR_SENS1);
-            //TODO: find the formula for %
-            lcd_printf("%u%%", resultLiPo);
-            lcd_gotoxy(0,1);
-            lcd_printf("Temp");
-            temperatureLiPo = HW_ReadSensor(TMP_SENS);
-            lcd_printf("%uC ", temperatureLiPo);
-            lcd_printf("Fan:");
-            break;
-        case LVL_LOW:
-            lcd_printf("NiMh ");
-            resultNiMh = HW_ReadSensor(CURR_SENS2);
-            //TODO: find the formula for %
-            lcd_printf("%u%%", resultNiMh);
-            lcd_gotoxy(0,1);
-            lcd_printf("Temp:");
-            temperatureNiMh = HW_ReadSensor(TMP_SENS);
-            lcd_printf("%uC ", temperatureNiMh);
-            lcd_printf("Fan:");
-            break;
-        default: //do nothing
+        }
+
+//        switch (btn)
+////        {
+////            case LVL_HIGH:
+////                lcd_printf("LiPo ");
+////                resultLiPo = HW_ReadSensor(CURR_SENS1);
+////                //TODO: find the formula for %
+////                lcd_printf("%u%%", resultLiPo);
+////                lcd_gotoxy(0,1);
+////                lcd_printf("Temp");
+////                temperatureLiPo = HW_ReadSensor(TMP_SENS);
+////                lcd_printf("%uC ", temperatureLiPo);
+////                lcd_printf("Fan:");
+////                break;
+////            case LVL_LOW:
+////                lcd_printf("NiMh ");
+////                resultNiMh = HW_ReadSensor(CURR_SENS2);
+////                //TODO: find the formula for %
+////                lcd_printf("%u%%", resultNiMh);
+////                lcd_gotoxy(0,1);
+////                lcd_printf("Temp:");
+////                temperatureNiMh = HW_ReadSensor(TMP_SENS);
+////                lcd_printf("%uC ", temperatureNiMh);
+////                lcd_printf("Fan:");
+////                break;
+////            default: //do nothing
+////        }
     }
-}
-void LCD_interface2()
-{
-    uint16 resultLiPo, resultNiMh, temperatureLiPo, temperatureNiMh;
-    switch (btn)
+    else
     {
-        case LVL_HIGH:
-            lcd_printf("LiPo ");
-            resultLiPo = HW_ReadSensor(CURR_SENS1);
-            //TODO: calculate the current
-            lcd_printf("%u mA", resultLiPo);
-            lcd_gotoxy(0,1);
-            lcd_printf("Temp");
-            temperatureLiPo = HW_ReadSensor(TMP_SENS);
-            lcd_printf("%uC ", temperatureLiPo);
-            lcd_printf("Fan:");
-            break;
-        case LVL_LOW:
-            lcd_printf("NiMh ");
-            resultNiMh = HW_ReadSensor(CURR_SENS2);
-            //TODO: calculate the current
-            lcd_printf("%u mA", resultNiMh);
-            lcd_gotoxy(0,1);
-            lcd_printf("Temp:");
-            temperatureNiMh = HW_ReadSensor(TMP_SENS);
-            lcd_printf("%uC ", temperatureNiMh);
-            lcd_printf("Fan:");
-            break;
-        default: //do nothing
+        lcd_printf("Power OFF");
     }
+
 }
-*/
+
+HW_DataCollection HW_GetData() {
+    HW_DataCollection collection;
+    collection.temperature = read
+            
+    return collection;
+}
 
 interrupt [PC_INT2] void BATTERY(void)
 {

@@ -40,7 +40,8 @@ typedef enum
     RED_LED,
     ON_OFF_LED, // PORTD6
     POWER_RELAY,
-    BATTERY_RELAY
+    BATTERY_RELAY,
+    FAN
 }HW_OUT;
 
 /**
@@ -116,23 +117,20 @@ uint8 HW_ReadInput(HW_DIN controlUnit);
  * @implements	HW_ReadSensor(HW_AIN sensor)
 */
 uint16 HW_ReadSensor(HW_AIN sensor);
-/**
-* @brief Controls the interface of LCD
- * @implements	void LCD_interface1(uint8 logicLevel)
-*/
-void LCD_interface1(void);
-
-/**
-* @brief Controls the interface of LCD
- * @implements	void LCD_interface2(uint8 logicLevel)
-*/
-void LCD_interface2();
 
 /**
 * @brief Initialize the LCD
  * @implements	void LCD_init(void);
 */
-void LCD_init(void);
+void LCD_Init(void);
+
+/**
+* @brief Controls the interface of LCD
+ * @implements	void LCD_interface1(uint8 logicLevel)
+*/
+void LCD_Print(void);
+
+HW_DataCollection HW_GetData();
 
 
 #endif /* HW_H */
