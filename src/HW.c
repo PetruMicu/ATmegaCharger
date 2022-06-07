@@ -89,7 +89,7 @@ void HW_SetOutput(HW_OUT controlUnit, uint8 logicLevel)
             copy.bit6 = logicLevel;
             PORTB = copy.reg8;
             copy.reg8 = PORTD;
-            copy.bit6 = logicLevel;
+            copy.bit6 = !logicLevel;
             PORTD = copy.reg8;
             break;
         case BATTERY_RELAY:

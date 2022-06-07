@@ -14,7 +14,7 @@
 #include "../include/PrimitiveTypeDefs.h"
 #include <delay.h>
 #include <math.h>
-
+uint8_t debug = 0;
 /**
 * Main Function of the project.
 *
@@ -29,21 +29,21 @@ void ATmegaCharger()
     LCD_init();
     while(1)
     {
-        if(HW_ReadInput(INTERFACE_BTN)){
-            HW_SetOutput(BATTERY_RELAY, LVL_HIGH);
-            HW_SetOutput(GREED_LED, LVL_HIGH);
-            delay_ms(1000);
-            HW_SetOutput(BATTERY_RELAY, LVL_LOW);
-            HW_SetOutput(GREED_LED, LVL_LOW);
-            delay_ms(1000);
-        }
-        else {
+        if(debug == 0){
             HW_SetOutput(POWER_RELAY, LVL_LOW);
             HW_SetOutput(RED_LED, LVL_LOW);
             delay_ms(2000);
             HW_SetOutput(POWER_RELAY, LVL_HIGH);
             HW_SetOutput(RED_LED, LVL_HIGH);
             delay_ms(2000);
+        }
+        else {
+            HW_SetOutput(BATTERY_RELAY, LVL_HIGH);
+            HW_SetOutput(GREED_LED, LVL_HIGH);
+            delay_ms(1000);
+            HW_SetOutput(BATTERY_RELAY, LVL_LOW);
+            HW_SetOutput(GREED_LED, LVL_LOW);
+            delay_ms(1000);
         }
 
     }
