@@ -10,6 +10,7 @@
 #include <mega164a.h>
 #include <alcd_twi.h>
 uint8_t powerRelay = 0; // off
+uint8_t batteryRelay = 0; // 0 LiPo, 1 NiMH
 
 static uint16_t readAdc(uint8_t adcInput)
 {
@@ -65,11 +66,14 @@ void HW_Init(void)
     copy.bit6 = LVL_LOW;
     copy.bit7 = LVL_LOW;
     PORTB = copy.reg8;
+    // C7 input
+    PORTC |= (1u << PORTC7);
     //ADC init
     HW_ADCInit();
     //Enable PCINT3 interrupt for PCINT29 <-> PD5
-    PCICR |= (1u << PCIE3);
+    PCICR |= (1u << PCIE3) | (1 << PCIE2);
     PCMSK3 |= (1u << PCINT29);
+    PCMSK2 |= (1u << PCINT23);
 }
 
 /**
@@ -213,15 +217,28 @@ void LCD_interface2()
 }
 */
 
-interrupt [PC_INT3] void ButtonPressed(void)
+interrupt [PC_INT2] void BATTERY(void)
+{
+    if(((PINC >> 7u) & 1u) == 0)
+    {
+        batteryRelay ^= 1u;
+        if(batteryRelay == 1) //
+            HW_SetOutput(BATTERY_RELAY,LVL_HIGH);
+        else
+            HW_SetOutput(BATTERY_RELAY,LVL_LOW);
+        delay_ms(700);
+    }
+}
+
+interrupt [PC_INT3] void POWER(void)
 {
     if(((PIND >> 5u) & 1u) == 0)
     {
+        powerRelay ^= 1u;
         if(powerRelay == 1)
             HW_SetOutput(POWER_RELAY,LVL_HIGH);
         else
             HW_SetOutput(POWER_RELAY,LVL_LOW);
-        powerRelay ^= 1u;
         delay_ms(700);
     }
 }
