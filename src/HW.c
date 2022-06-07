@@ -9,9 +9,10 @@
 #include "../include/HW.h"
 #include <mega164a.h>
 #include <alcd_twi.h>
-uint8_t debug = 1;
+uint8_t powerRelay = 0; // off
 
-static uint16_t readAdc(uint8_t adcInput) {
+static uint16_t readAdc(uint8_t adcInput)
+{
     ADMUX=adcInput | ADC_VREF_TYPE;
 // Delay needed for the stabilization of the ADC input voltage
     delay_us(10);
@@ -50,9 +51,9 @@ void HW_Init(void)
     copy.bit7 = 0u; //PORTD7 -> DIGITAL_TMP SENSOR
     DDRD = copy.reg8;
     copy.reg8 = PORTD;
-    copy.bit2 = LVL_LOW;
-    copy.bit3 = LVL_LOW;
-    copy.bit5 = LVL_LOW;
+    copy.bit2 = 1u;
+    copy.bit3 = 1u;
+    copy.bit5 = 1u;
     PORTD = copy.reg8;
     // test and modify if needed
     // B6, B7 used as digital outputs
@@ -212,10 +213,16 @@ void LCD_interface2()
 }
 */
 
-interrupt [PC_INT3] void ButtonPressed(void) {
-    if(HW_ReadInput(INTERFACE_BTN) == LVL_LOW)
-        return;
-    debug ^= 1u;
-    delay_ms(1000);
+interrupt [PC_INT3] void ButtonPressed(void)
+{
+    if(((PIND >> 5u) & 1u) == 0)
+    {
+        if(powerRelay == 1)
+            HW_SetOutput(POWER_RELAY,LVL_HIGH);
+        else
+            HW_SetOutput(POWER_RELAY,LVL_LOW);
+        powerRelay ^= 1u;
+        delay_ms(700);
+    }
 }
 
